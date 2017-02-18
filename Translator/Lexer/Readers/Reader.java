@@ -1,5 +1,4 @@
 package Readers;
-
 import Token.Token;
 
 public interface Reader {

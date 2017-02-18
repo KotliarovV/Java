@@ -1,6 +1,2 @@
 package struckture;
-
-public interface Struckture {
-	
-
-}
+public interface Struckture {}

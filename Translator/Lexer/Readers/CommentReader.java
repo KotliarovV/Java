@@ -1,5 +1,4 @@
 package Readers;
-
 import Token.Token;
 
 public class CommentReader implements Reader {
@@ -9,12 +8,7 @@ public class CommentReader implements Reader {
 		this.commentSymbol = commentSymbol;
 	}
 
-	public Token tryReadToken(String input) 
-	{
-		
-		if (input.startsWith(this.commentSymbol))
-			return new Token("comment", input);
-		return null;
-		
+	public Token tryReadToken(String input) {
+		return  (input.startsWith(this.commentSymbol)) ? new Token("comment", input) : null;
 	}
 }

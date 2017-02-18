@@ -12,45 +12,31 @@ import Readers.WordReader;
 import Token.Token;
 
 public class Lexer {
-	public Language language;
-	public String[] code;
-	public CommentReader comReader;
-	public FloatReader floatReader;
-	public IntReader intReader;
-	public IdentifierReader identReader;
-	public StringReader stringReader;
-	public WhitespaceReader whitespaceReader;
-	public WordReader wordReader;
+	private Language language;
+	private String[] code;
 	public Token[] t;
-	
 	public Reader[] readers;
 
-	public Lexer (String fileName, Language language)
-	{
+	public Lexer (String fileName, Language language) {
 		this.language = language;
 		FileRead fileReader = new FileRead(fileName);
 		this.code = fileReader.strings;
-		
-		this.comReader = new CommentReader(this.language.commentSymbol);
-		this.floatReader = new FloatReader();
-		this.intReader = new IntReader();
-		this.identReader = new IdentifierReader();
-		this.stringReader = new StringReader();
-		this.whitespaceReader = new WhitespaceReader();
-		this.wordReader = new WordReader(this.language.lexems);
-		
-		
-		Reader[] readers  = {this.comReader, this.floatReader, this.intReader, this.identReader,this.stringReader, this.whitespaceReader, this.wordReader};
+		CommentReader comReader = new CommentReader(this.language.commentSymbol);
+		FloatReader floatReader = new FloatReader();
+		IntReader intReader = new IntReader();
+		IdentifierReader identReader = new IdentifierReader();
+		StringReader stringReader = new StringReader();
+		WhitespaceReader whitespaceReader = new WhitespaceReader();
+		WordReader wordReader = new WordReader(this.language.lexems);
+		Reader[] readers  = {comReader, floatReader, intReader, identReader, stringReader, whitespaceReader, wordReader};
 		this.readers = readers;
-		
 	}
 				
-	public void tokensMaker()
-	{
+	public void tokensMaker() {
 		ArrayList <Token> tokens = new ArrayList<>();
 		for (int i = 0; i< code.length; i++)
 		{
-			while (code[i] != "" )
+			while (!code[i].equals(""))
 			{
 				int l = 0;
 				Token token = null;
@@ -68,9 +54,6 @@ public class Lexer {
 				code[i] = code[i].substring(l,code[i].length());
 			}
 		}
-		
 		t = tokens.toArray(new Token[tokens.size()]);
-		
 	}
-
 }

@@ -11,14 +11,9 @@ import struckture.SimpleStruckture;
 import struckture.Struckture;
 
 public class Java extends Language{
-	
-
-
-	public Java()
-	{
+	public Java() {
 		lexems =   new HashMap<String, String>();
-		
-		lexems.put("declaration","var"); 
+		lexems.put("declaration","var");
 		lexems.put("float type", "float"); 
 		lexems.put("int type", "int"); 
 		lexems.put("str type", "String"); 
@@ -38,128 +33,95 @@ public class Java extends Language{
 		lexems.put("div", "/"); 
 		lexems.put("mod", "%"); 
 		lexems.put("equals", "=="); 
-		lexems.put("semicolon", ";"); 
-		//lexems.put("string mark ", "\\\""); 
-		lexems.put("goa", ">="); 
+		lexems.put("semicolon", ";");
+		lexems.put("goa", ">=");
 		lexems.put("loa", "<=");
 		lexems.put("comma", ",");
-		
-		
-		commentSymbol = "//"; 
-		
-		// = new HashMap<String, String[]>() ;
+		commentSymbol = "//";
 	}
 	
-	public ArrayList<Struckture> parseArray (Token[] tokens)
-	{
+	public ArrayList<Struckture> parseArray (Token[] tokens) {
 		ArrayList <Struckture> strucktures = new ArrayList<>();
 		for (int i = 0; i< tokens.length; i++)
 		{
-			
 			if (Arrays.binarySearch(structuresIfWhile, tokens[i].getType()) >=0)
 			{
 				Token keyWord = tokens[i];
 				ArrayList <Token> condition = new ArrayList<>();
 				ArrayList <Token> body = new ArrayList<>();
 				i++;
-				while (tokens[i].getType() != "function right")
+				while (!tokens[i].getType().equals("function right"))
 				{
-					if (tokens[i].getType() != "function left" && tokens[i].getType() != "ws")
-					{
+					if ((!tokens[i].getType().equals( "function left")) && (!tokens[i].getType().equals("ws")))
 						condition.add(tokens[i]);
-						i++;
-					}
-					else
-						i++;				
+					i++;
 				}
 				i++;
-				
-				while (tokens[i].getType() != "close")
+				while (!tokens[i].getType().equals("close"))
 				{
-					if (tokens[i].getType() != "open" && tokens[i].getType() != "ws")
-					{
+					if ((!tokens[i].getType().equals("open")) && (!tokens[i].getType().equals("ws")))
 						body.add(tokens[i]);
-						i++;
-					}
-					else
-						i++;				
+					i++;
 				}
-				
 				Struckture newS = new IfWhileStruckture(keyWord, condition.toArray(new Token[condition.size()]),body.toArray(new Token[body.size()]) );
 				strucktures.add(newS);
 			}
-			
 			else if (Arrays.binarySearch(declarations, tokens[i].getType()) >=0)
 			{
 				Token keyWord = tokens[i];
 				ArrayList <Token> variables = new ArrayList<>();
 				ArrayList <Token> body = new ArrayList<>();
-				
 				i++;
-				while (tokens[i].getType() == "identifier" || tokens[i].getType() == "ws" || tokens[i].getType() == "comma" )
+				while (tokens[i].getType().equals("identifier") || tokens[i].getType().equals("ws") || tokens[i].getType().equals("comma") )
 				{
-					if (tokens[i].getType() != "comma" && tokens[i].getType() != "ws")
-					{
+					if ((!tokens[i].getType().equals("comma")) && (!tokens[i].getType().equals("ws")))
 						variables.add(tokens[i]);
-						i++;
-					}
-					else
-						i++;
+					i++;
 				}
-				if (tokens[i].getType() == "acquire")
+				if (tokens[i].getType().equals("acquire"))
 				{
 					body.add(variables.get(variables.size()-1));
-					while (tokens[i].getType() != "semicolon")
+					while (!tokens[i].getType().equals("semicolon"))
 					{
 						body.add(tokens[i]);
 						i++;
 					}
 					body.add(tokens[i]);
 				}
-				
 				strucktures.add(new DeclarationStructure (keyWord,variables.toArray(new Token[variables.size()])));
 				if (body.size() > 0)
 					strucktures.add(new SimpleStruckture (body.toArray(new Token[body.size()])));
 			}
-			
-			
-			else if (tokens[i].getType() == "comment")
+			else if (tokens[i].getType().equals("comment"))
 			{
 				strucktures.add(new CommentStruckture (tokens[i].getText()));
 			}
-			
-			else if (tokens[i].getType() != "close" && tokens[i].getType() != "semicolon")
+			else if ((!tokens[i].getType().equals("close")) && (!tokens[i].getType().equals("semicolon")))
 			{
 				ArrayList <Token> body = new ArrayList<>();
-				while (tokens[i].getType() != "semicolon")
+				while (!tokens[i].getType().equals("semicolon"))
 				{
 					body.add(tokens[i]);
 					i++;
 				}
 				strucktures.add(new SimpleStruckture (body.toArray(new Token[body.size()])));
 			}
-			
-			
-			
 		}
 		return strucktures;
 	}
 	
-	public String concat (ArrayList<Struckture> strings)
-	{
+	public String concat (ArrayList<Struckture> strings) {
 		String answer;
-		answer = "public class Main {  public static void main(String[] args) { "; 
-		
-		for ( int i =0; i <strings.size(); i++)
+		answer = "public class Main {  public static void main(String[] args) { ";
+		for (int i =0; i <strings.size(); i++)
 		{
 			if (strings.get(i) instanceof DeclarationStructure)
 			{
 				DeclarationStructure dec = (DeclarationStructure) strings.get(i);
 				answer = answer + lexems.get(dec.type.getType())+" ";
-				for (int j = 0; j< dec.variables.length; j++)
-				{
+				for (int j = 0; j< dec.variables.length; j++) {
 					if (j!=dec.variables.length-1)
-					answer = answer+ dec.variables[j].getText()+", ";
+						answer = answer+ dec.variables[j].getText()+", ";
 					else
 						answer = answer+ dec.variables[j].getText()+"; \n";
 				}
