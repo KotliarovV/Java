@@ -1,5 +1,4 @@
 package struckture;
-
 import Token.Token;
 
 public class IfWhileStruckture implements Struckture {
